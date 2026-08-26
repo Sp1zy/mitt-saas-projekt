@@ -24,9 +24,10 @@ export default function App() {
         {
             q: 'Who actually owns the code and intellectual property?',
             a: 'You hold 100% legal ownership of all source code, design files, custom scripts, and assets created during your subscription period upon payment.'
-
-            q: 'What if I don`t like the final design or code implementation?'
-            a: 'We offer unlimited revisions.Leave feedback directly on the pull request, Figma file, or staging link, and we will iterate until it meets your exact standards.'
+        },
+        {
+            q: 'What if I dont like the final design or code implementation?',
+            a: 'We offer unlimited revisions. Leave feedback directly on the pull request, Figma file, or staging link, and we will iterate until it meets your exact standards.'
         }
     ];
 
