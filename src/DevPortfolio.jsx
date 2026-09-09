@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 const ENGINEERS = [
     {
         id: 1,
-        name: 'Zainab J.',
+        name: 'Jamie L.',
         initial: 'J',
-        role: 'Lead AI & Automation Engineer',
+        role: 'AI & Automation Developer',
         category: 'ai',
         availability: 'Available for Sprints',
-        stack: ['Python', 'React', 'Flask', 'Grok SDK', 'Electron'],
+        stack: ['Python', 'Typescript', 'Flutter', 'React', 'FastAPI', 'Tensorflow', 'Pandas' ],
         deliverables: [
-            'Built multi-OS CRM desktop architecture integrated with custom AI agents.',
-            'Designed NLP and computer vision pipelines for automated data extraction.'
+            'Built multi-platform CRM application with AI agents integration for workflow automation that speeds up productivity up to 80%.',
+            'Built custom document parsing model with 98% accuracy that is integrated in a job-matching web application.'
         ]
     },
     {

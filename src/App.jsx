@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TermsOfService, PrivacyPolicy } from './Legal';
-import DevPortfolioGrid from './DevPortfolio';
 import { Dashboard } from './Dashboard';
+import DevPortfolioGrid from './DevPortfolio';
 
 const STRIPE_PORTAL_URL = "https://billing.stripe.com/p/login/4gMeVd8TH5KadqQct00kE00";
 
@@ -262,7 +262,6 @@ export default function App() {
                         Choose the plan that fits your execution pace
                     </p>
                 </div>
-
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
                     {/* Card 1 */}
                     <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition-all">
@@ -271,12 +270,10 @@ export default function App() {
                             <p className="text-slate-400 text-xs mt-2 min-h-[36px]">
                                 Best for: Single landing pages, MVP builds, or clearing emergency bug backlogs.
                             </p>
-
                             <div className="my-8">
                                 <span className="text-4xl font-extrabold text-white">$1,490</span>
                                 <span className="text-slate-400 text-xs block mt-1">USD / One-Time</span>
                             </div>
-
                             <ul className="space-y-4 text-sm text-slate-300 mb-8 border-t border-slate-800/80 pt-6">
                                 <li className="flex items-center gap-3">
                                     <span className="text-violet-400 font-bold">✓</span> 1 active request at a time
@@ -292,10 +289,14 @@ export default function App() {
                                 </li>
                             </ul>
                         </div>
-
-                        <button className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl transition-all">
+                        <a
+                            href="https://checkout.revolut.com/pay/615a0401-a863-43d0-8ea2-52b7941ecfd9"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full text-center bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl transition-all block"
+                        >
                             Book Sprint Pass
-                        </button>
+                        </a>
                     </div>
 
                     {/* Card 2 */}
@@ -303,18 +304,15 @@ export default function App() {
                         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[11px] font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow-md">
                             Most Popular
                         </div>
-
                         <div>
                             <h3 className="text-xl font-bold text-white">Monthly Standard</h3>
                             <p className="text-slate-400 text-xs mt-2 min-h-[36px]">
                                 Best for: Ongoing web app features, continuous maintenance, and agency overflow.
                             </p>
-
                             <div className="my-8">
                                 <span className="text-4xl font-extrabold text-white">$2,490</span>
                                 <span className="text-slate-400 text-xs block mt-1">USD / Month</span>
                             </div>
-
                             <ul className="space-y-4 text-sm text-slate-300 mb-8 border-t border-slate-800/80 pt-6">
                                 <li className="flex items-center gap-3">
                                     <span className="text-violet-400 font-bold">✓</span> 1 active request at a time
@@ -330,10 +328,14 @@ export default function App() {
                                 </li>
                             </ul>
                         </div>
-
-                        <button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-600/25">
+                        <a
+                            href="https://checkout.revolut.com/pay/4f605bd8-f473-4f5c-955b-3ade898e5ffd"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full text-center bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-600/25 block"
+                        >
                             Start Monthly Standard
-                        </button>
+                        </a>
                     </div>
 
                     {/* Card 3 */}
@@ -343,12 +345,10 @@ export default function App() {
                             <p className="text-slate-400 text-xs mt-2 min-h-[36px]">
                                 Best for: Complex SaaS apps, multi-developer projects, and high-velocity agencies.
                             </p>
-
                             <div className="my-8">
                                 <span className="text-4xl font-extrabold text-white">$3,990</span>
                                 <span className="text-slate-400 text-xs block mt-1">USD / Month</span>
                             </div>
-
                             <ul className="space-y-4 text-sm text-slate-300 mb-8 border-t border-slate-800/80 pt-6">
                                 <li className="flex items-center gap-3">
                                     <span className="text-violet-400 font-bold">✓</span> <strong>2 active requests at a time</strong>
@@ -367,10 +367,14 @@ export default function App() {
                                 </li>
                             </ul>
                         </div>
-
-                        <button className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl transition-all">
+                        <a
+                            href="https://checkout.revolut.com/pay/f49a98fa-4a9f-490a-80b3-51e612f829bf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full text-center bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-xl transition-all block"
+                        >
                             Start Monthly Pro
-                        </button>
+                        </a>
                     </div>
                 </div>
             </section>
