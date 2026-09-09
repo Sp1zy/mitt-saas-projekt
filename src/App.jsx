@@ -8,6 +8,7 @@ export default function App() {
         setOpenFaq(openFaq === index ? null : index);
     };
 
+    
     const faqs = [
         {
             q: 'How does the request queue work in practice?',
