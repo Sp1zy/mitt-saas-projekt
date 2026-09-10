@@ -36,6 +36,7 @@ export function RequestForm({ idPrefix, initialValues = EMPTY_REQUEST_VALUES, su
                 label="Request"
                 type="text"
                 placeholder="What do you need built?"
+                autoFocus
                 value={values.title}
                 onChange={updateField('title')}
                 errorMessage={fieldErrors.title}

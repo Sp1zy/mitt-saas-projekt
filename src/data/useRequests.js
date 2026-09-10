@@ -1,10 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { listRequests, createRequest, updateRequest, deleteRequest } from './requestsRepository.js';
+import { isRequestEditable } from './requestStatus.js';
+import { nextQueuePosition, planMoveToIndex } from './queueOrdering.js';
 
 export function useRequests(userId) {
     const [requests, setRequests] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
+    const latestRequestsRef = useRef(requests);
+
+    useEffect(() => {
+        latestRequestsRef.current = requests;
+    }, [requests]);
 
     const reloadRequests = useCallback(async () => {
         setIsLoading(true);
@@ -33,18 +40,35 @@ export function useRequests(userId) {
         }
     };
 
+    const mergeUpdatedRequests = (updatedRequests) => {
+        setRequests((previousRequests) =>
+            previousRequests.map((request) => updatedRequests.find((updated) => updated.id === request.id) ?? request),
+        );
+        latestRequestsRef.current = latestRequestsRef.current.map(
+            (request) => updatedRequests.find((updated) => updated.id === request.id) ?? request,
+        );
+    };
+
+    const persistPositions = async (positionUpdates) => {
+        if (positionUpdates.length === 0) return;
+        const updatedRequests = await Promise.all(
+            positionUpdates.map(({ id, position }) => updateRequest(id, { position })),
+        );
+        mergeUpdatedRequests(updatedRequests);
+    };
+
+    const queuedRequests = () => latestRequestsRef.current.filter(isRequestEditable);
+
     const addRequest = ({ title, details }) =>
         runMutation(async () => {
-            const createdRequest = await createRequest({ userId, title, details });
-            setRequests((previousRequests) => [createdRequest, ...previousRequests]);
+            const position = nextQueuePosition(queuedRequests());
+            const createdRequest = await createRequest({ userId, title, details, position });
+            setRequests((previousRequests) => [...previousRequests, createdRequest]);
         });
 
     const editRequest = (requestId, changes) =>
         runMutation(async () => {
-            const updatedRequest = await updateRequest(requestId, changes);
-            setRequests((previousRequests) =>
-                previousRequests.map((request) => (request.id === requestId ? updatedRequest : request)),
-            );
+            mergeUpdatedRequests([await updateRequest(requestId, changes)]);
         });
 
     const removeRequest = (requestId) =>
@@ -53,5 +77,26 @@ export function useRequests(userId) {
             setRequests((previousRequests) => previousRequests.filter((request) => request.id !== requestId));
         });
 
-    return { requests, isLoading, errorMessage, addRequest, editRequest, removeRequest, reloadRequests };
+    const setUrgent = (requestId, isUrgent) =>
+        runMutation(async () => {
+            mergeUpdatedRequests([await updateRequest(requestId, { isUrgent })]);
+            if (isUrgent) await persistPositions(planMoveToIndex(queuedRequests(), requestId, 0));
+        });
+
+    const reorderRequest = (requestId, targetIndex) =>
+        runMutation(async () => {
+            await persistPositions(planMoveToIndex(queuedRequests(), requestId, targetIndex));
+        });
+
+    return {
+        requests,
+        isLoading,
+        errorMessage,
+        addRequest,
+        editRequest,
+        removeRequest,
+        reorderRequest,
+        setUrgent,
+        reloadRequests,
+    };
 }

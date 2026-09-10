@@ -1,34 +1,38 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider.jsx';
-import { getDisplayName, getCompanyName, getProjectSummary } from '../auth/userMetadata.js';
+import { getDisplayName, getProjectSummary } from '../auth/userMetadata.js';
 import { STRIPE_PORTAL_URL } from '../constants.js';
-import { REQUEST_STATUS } from '../data/requestStatus.js';
 import { useRequests } from '../data/useRequests.js';
-import { toActivityEntries } from '../data/requestActivity.js';
+import { isRequestEditable } from '../data/requestStatus.js';
+import { sortByPosition } from '../data/queueOrdering.js';
 import { SAMPLE_SUBSCRIPTION } from '../data/sampleSubscription.js';
 import { SiteHeader } from '../components/SiteHeader.jsx';
 import { FormErrorBanner } from '../components/FormErrorBanner.jsx';
 import { Spinner } from '../components/Spinner.jsx';
-import { PRIMARY_BUTTON_CLASS_NAME, SECONDARY_BUTTON_CLASS_NAME } from '../components/formStyles.js';
-import { PlanSummaryCard } from '../components/dashboard/PlanSummaryCard.jsx';
-import { RequestStats } from '../components/dashboard/RequestStats.jsx';
-import { RequestList } from '../components/dashboard/RequestList.jsx';
-import { RequestForm } from '../components/dashboard/RequestForm.jsx';
-import { ActivityFeed } from '../components/dashboard/ActivityFeed.jsx';
+import { PRIMARY_BUTTON_CLASS_NAME } from '../components/formStyles.js';
+import { AccountMenu } from '../components/dashboard/AccountMenu.jsx';
+import { PlanLine } from '../components/dashboard/PlanLine.jsx';
+import { Board } from '../components/dashboard/Board.jsx';
+import { NewRequestModal } from '../components/dashboard/NewRequestModal.jsx';
+import { RequestModal } from '../components/dashboard/RequestModal.jsx';
 
-function SectionCard({ title, children }) {
+const PANEL = {
+    NEW_REQUEST: 'new-request',
+    REQUEST: 'request',
+};
+
+function PlusIcon() {
     return (
-        <section className="p-6 rounded-2xl bg-slate-900 border border-slate-800">
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-violet-400 mb-5">{title}</h2>
-            {children}
-        </section>
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+        </svg>
     );
 }
 
-function LoadingRequests() {
+function LoadingBoard() {
     return (
-        <div className="flex items-center justify-center gap-3 py-10 text-slate-500 text-sm">
+        <div className="flex items-center justify-center gap-3 py-24 text-slate-500 text-sm">
             <span className="text-violet-500">
                 <Spinner label="Loading requests" />
             </span>
@@ -37,37 +41,23 @@ function LoadingRequests() {
     );
 }
 
-function DashboardHeading({ user }) {
-    const companyName = getCompanyName(user);
-    return (
-        <div className="mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-xs font-semibold mb-6">
-                <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse"></span>
-                {companyName ?? 'Client Dashboard'}
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white leading-[1.15]">
-                Your sprint{' '}
-                <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-pink-400 bg-clip-text text-transparent">
-                    desk.
-                </span>
-            </h1>
-            <p className="text-slate-400 text-lg mt-3">Signed in as {getDisplayName(user)}</p>
-        </div>
-    );
-}
-
 export function DashboardPage() {
     const { user, signOut } = useAuth();
     const navigate = useNavigate();
     const [subscription, setSubscription] = useState(SAMPLE_SUBSCRIPTION);
-    const [editingRequestId, setEditingRequestId] = useState(null);
-    const { requests, isLoading, errorMessage, addRequest, editRequest, removeRequest } = useRequests(user.id);
+    const [activePanel, setActivePanel] = useState(null);
+    const { requests, isLoading, errorMessage, addRequest, editRequest, removeRequest, reorderRequest, setUrgent } =
+        useRequests(user.id);
 
-    const activeRequests = requests.filter((request) => request.status !== REQUEST_STATUS.DONE);
-    const deliveredRequests = requests.filter((request) => request.status === REQUEST_STATUS.DONE);
-    const activityEntries = toActivityEntries(requests);
     const isFirstRequest = !isLoading && requests.length === 0;
-    const newRequestInitialValues = { title: '', details: isFirstRequest ? getProjectSummary(user) : '' };
+    const firstName = getDisplayName(user).split(' ')[0];
+    const openRequest = activePanel?.kind === PANEL.REQUEST ? requests.find((request) => request.id === activePanel.requestId) : null;
+    const isPanelOpen = activePanel !== null;
+    const topQueuedRequest = sortByPosition(requests.filter(isRequestEditable))[0] ?? null;
+
+    const closePanel = useCallback(() => setActivePanel(null), []);
+    const openNewRequest = () => setActivePanel({ kind: PANEL.NEW_REQUEST });
+    const openRequestModal = (requestId) => setActivePanel({ kind: PANEL.REQUEST, requestId });
 
     const handleLogout = async () => {
         await signOut();
@@ -78,86 +68,77 @@ export function DashboardPage() {
         setSubscription({ ...subscription, isPaused: !subscription.isPaused });
     };
 
-    const saveEdit = async (requestId, changes) => {
-        const isSaved = await editRequest(requestId, changes);
-        if (isSaved) setEditingRequestId(null);
+    const submitNewRequest = async (values) => {
+        const isSaved = await addRequest(values);
+        if (isSaved) closePanel();
         return isSaved;
     };
 
-    const confirmRemove = (request) => {
-        const isConfirmed = window.confirm(`Remove "${request.title}" from the queue?`);
-        if (isConfirmed) removeRequest(request.id);
+    const confirmRemove = async (request) => {
+        const isConfirmed = window.confirm(`Remove "${request.title}"? This cannot be undone.`);
+        if (!isConfirmed) return;
+        const isRemoved = await removeRequest(request.id);
+        if (isRemoved && openRequest?.id === request.id) closePanel();
     };
 
-    const listHandlers = {
-        editingRequestId,
-        onStartEdit: setEditingRequestId,
-        onCancelEdit: () => setEditingRequestId(null),
-        onSaveEdit: saveEdit,
-        onRemove: confirmRemove,
-    };
+    const moveToTop = (requestId) => reorderRequest(requestId, 0);
 
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-violet-500 selection:text-white">
             <SiteHeader>
-                <a href={STRIPE_PORTAL_URL} target="_blank" rel="noreferrer" className={`${SECONDARY_BUTTON_CLASS_NAME} hidden sm:inline-block`}>
-                    Stripe Billing
-                </a>
-                <button onClick={handleLogout} className={`${PRIMARY_BUTTON_CLASS_NAME} px-5 py-2.5 shadow-lg shadow-indigo-600/20`}>
-                    Log Out
+                <button type="button" onClick={openNewRequest} className={`${PRIMARY_BUTTON_CLASS_NAME} inline-flex items-center gap-2 px-4 py-2.5 shadow-lg shadow-indigo-600/20`}>
+                    <PlusIcon />
+                    New request
                 </button>
+                <AccountMenu user={user} onSignOut={handleLogout} />
             </SiteHeader>
 
-            <main className="max-w-7xl mx-auto px-6 pt-16 pb-24">
-                <DashboardHeading user={user} />
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 flex flex-col gap-6">
-                        <RequestStats requests={requests} />
-                        <FormErrorBanner message={errorMessage} />
-
-                        <SectionCard title="Active Requests">
-                            {isLoading ? (
-                                <LoadingRequests />
-                            ) : (
-                                <RequestList
-                                    requests={activeRequests}
-                                    emptyMessage="Nothing in the queue yet. Submit your first request below."
-                                    {...listHandlers}
-                                />
-                            )}
-                        </SectionCard>
-
-                        <SectionCard title={isFirstRequest ? 'Your First Request' : 'New Request'}>
-                            {!isLoading && (
-                                <RequestForm
-                                    idPrefix="new-request"
-                                    initialValues={newRequestInitialValues}
-                                    submitLabel="Add to Queue"
-                                    onSubmit={addRequest}
-                                />
-                            )}
-                        </SectionCard>
-
-                        {deliveredRequests.length > 0 && (
-                            <SectionCard title="Delivered">
-                                <RequestList requests={deliveredRequests} {...listHandlers} />
-                            </SectionCard>
-                        )}
+            <main className="max-w-7xl mx-auto px-6 pt-10 pb-24 flex flex-col gap-8">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                    <div>
+                        <h1 className="text-3xl font-black tracking-tight text-white">Hi {firstName}, here are your requests.</h1>
+                        <p className="text-slate-400 mt-2 max-w-2xl">
+                            Add what you need to <span className="text-white font-semibold">Up next</span>. We build one request at a time, starting from the top. Drag cards to change the order.
+                        </p>
                     </div>
-
-                    <div className="flex flex-col gap-6">
-                        <PlanSummaryCard subscription={subscription} portalUrl={STRIPE_PORTAL_URL} onTogglePause={togglePause} />
-                        <SectionCard title="Recent Activity">
-                            {activityEntries.length > 0 ? (
-                                <ActivityFeed activityEntries={activityEntries} />
-                            ) : (
-                                <p className="text-sm text-slate-500">Activity shows up here once you add a request.</p>
-                            )}
-                        </SectionCard>
-                    </div>
+                    <PlanLine subscription={subscription} portalUrl={STRIPE_PORTAL_URL} onTogglePause={togglePause} />
                 </div>
+
+                {!isPanelOpen && <FormErrorBanner message={errorMessage} />}
+
+                {isLoading ? (
+                    <LoadingBoard />
+                ) : (
+                    <Board
+                        requests={requests}
+                        onOpenRequest={openRequestModal}
+                        onReorder={reorderRequest}
+                        onOpenNewRequest={openNewRequest}
+                    />
+                )}
             </main>
+
+            <NewRequestModal
+                isOpen={activePanel?.kind === PANEL.NEW_REQUEST}
+                title={isFirstRequest ? 'Your first request' : 'New request'}
+                initialValues={{ title: '', details: isFirstRequest ? getProjectSummary(user) : '' }}
+                errorMessage={errorMessage}
+                onSubmit={submitNewRequest}
+                onClose={closePanel}
+            />
+            {openRequest && (
+                <RequestModal
+                    key={openRequest.id}
+                    request={openRequest}
+                    isAtTop={topQueuedRequest?.id === openRequest.id}
+                    errorMessage={errorMessage}
+                    onSaveEdit={editRequest}
+                    onToggleUrgent={setUrgent}
+                    onMoveToTop={moveToTop}
+                    onRemove={confirmRemove}
+                    onClose={closePanel}
+                />
+            )}
         </div>
     );
 }

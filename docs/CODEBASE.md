@@ -54,15 +54,16 @@ src/DevPortfolio.jsx          engineer cards with all/ai/fullstack filter (belon
 src/auth/validation.js        pure field validators: email, password rules, confirmation, website
 src/auth/userMetadata.js      profile <-> Supabase user_metadata mapping, getDisplayName
 src/data/onboardingOptions.js company size, primary need, plan interest option lists
-src/data/requestStatus.js     REQUEST_STATUS enum, labels, isRequestEditable (queued only)
+src/data/requestStatus.js     REQUEST_STATUS enum, client-facing labels (Up next, Being built, Ready for review, Done), status checks
+src/data/queueOrdering.js     pure queue math: sortByPosition, nextQueuePosition, planMoveToIndex (drop slot, top, normalize)
 src/data/requestsRepository.js Supabase calls for the requests table: list, create, update, delete
-src/data/useRequests.js       hook: requests, isLoading, errorMessage, addRequest, editRequest, removeRequest
-src/data/requestActivity.js   derives the Recent Activity feed from request status and updated_at
+src/data/useRequests.js       hook: requests, isLoading, errorMessage, addRequest, editRequest, removeRequest, reorderRequest, setUrgent
 src/data/formatDate.js        en-US short date formatter, safe for bare YYYY-MM-DD values
 src/data/sampleSubscription.js placeholder plan card data until Stripe billing sync exists
 tests/                        vitest + testing-library; mirrors src (auth, components, pages), helpers/signupFlow.js drives the signup steps
 vitest.config.js              jsdom environment, globals, tests/setup.js loads jest-dom matchers
-supabase/migrations/          SQL migrations; 20260910120000 creates requests table, RLS policies, updated_at trigger
+supabase/migrations/          SQL migrations, applied by hand in the Supabase SQL editor on 2026-09-10:
+                              120000 requests table + RLS, 130000 profiles table + signup trigger, 140000 position + is_urgent
 src/auth/supabase.js          createClient from env vars, throws if missing
 src/auth/AuthProvider.jsx     context + useAuth(): session, user, isAuthenticated, isLoading, authError, signIn, signUp({ email, password, profile }), signOut
 src/auth/ProtectedRoute.jsx   layout route: spinner while loading, redirect to /login, else <Outlet/>
@@ -82,8 +83,12 @@ src/components/SubmitButton.jsx   submit button that shows a spinner and busy la
 src/components/fields/            TextField, TextAreaField, SelectField, PasswordField (eye toggle),
                                   FieldLabel, FieldErrorMessage, PasswordRequirements checklist
 src/components/SignupForm.jsx     two steps: account (email, password) then company profile; onSignup({ email, password, profile })
-src/components/dashboard/     PlanSummaryCard, StatTile, RequestStats, RequestList (inline edit, remove), RequestForm,
-                              StatusBadge, NewRequestForm, ActivityFeed
+src/components/Modal.jsx      centered dialog shell: backdrop, Escape, close button, motion-safe animation
+src/components/dashboard/     Board (four Trello-style lanes: Up next, Being built, Ready for review, Done),
+                              RequestCard (drag-only, opens modal), RequestModal (facts, stepper, Edit, Mark as urgent,
+                              Move to top, Remove), NewRequestModal, useDragReorder (HTML5 DnD for Up next),
+                              StatusStepper, PlanLine (sample plan card), AccountMenu, RequestForm,
+                              StatusBadge
 src/data/sampleDashboard.js   placeholder subscription, requests, activity (replace with Supabase queries)
 src/assets/                   hero.png, react.svg, vite.svg, all unused
 dist/                         committed build output (stale, see Rough edges)

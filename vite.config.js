@@ -8,4 +8,9 @@ export default defineConfig({
         tailwindcss(),
     ],
     base: '/',
+    // Matches the Supabase Site URL default so confirmation links work locally.
+    server: {
+        port: 3000,
+        strictPort: true,
+    },
 })
