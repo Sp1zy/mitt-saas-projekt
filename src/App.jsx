@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage.jsx';
 import { SignupPage } from './pages/SignupPage.jsx';
 import { DashboardPage } from './pages/DashboardPage.jsx';
 
+
 export default function App() {
     return (
         <Routes>
