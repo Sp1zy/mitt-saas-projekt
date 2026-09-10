@@ -1,4 +1,4 @@
-import { toUserMetadata, getDisplayName, getCompanyName, getProjectSummary } from './userMetadata.js';
+import { toUserMetadata, getDisplayName, getCompanyName, getProjectSummary } from '../../src/auth/userMetadata.js';
 
 describe('toUserMetadata', () => {
     it('maps the profile to snake_case Supabase metadata', () => {

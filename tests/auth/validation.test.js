@@ -6,7 +6,7 @@ import {
     validateRequiredChoice,
     validateWebsiteUrl,
     hasAnyError,
-} from './validation.js';
+} from '../../src/auth/validation.js';
 
 describe('validateEmail', () => {
     it('requires a value', () => {

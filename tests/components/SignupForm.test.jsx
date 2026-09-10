@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SignupForm } from './SignupForm.jsx';
-import { VALID_ACCOUNT, VALID_COMPANY, completeAccountStep, completeCompanyStep } from '../test/signupFlow.js';
+import { SignupForm } from '../../src/components/SignupForm.jsx';
+import { VALID_ACCOUNT, VALID_COMPANY, completeAccountStep, completeCompanyStep } from '../helpers/signupFlow.js';
 
 function renderSignupForm(overrides = {}) {
     const onSignup = vi.fn().mockResolvedValue(undefined);

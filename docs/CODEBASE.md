@@ -60,6 +60,8 @@ src/data/useRequests.js       hook: requests, isLoading, errorMessage, addReques
 src/data/requestActivity.js   derives the Recent Activity feed from request status and updated_at
 src/data/formatDate.js        en-US short date formatter, safe for bare YYYY-MM-DD values
 src/data/sampleSubscription.js placeholder plan card data until Stripe billing sync exists
+tests/                        vitest + testing-library; mirrors src (auth, components, pages), helpers/signupFlow.js drives the signup steps
+vitest.config.js              jsdom environment, globals, tests/setup.js loads jest-dom matchers
 supabase/migrations/          SQL migrations; 20260910120000 creates requests table, RLS policies, updated_at trigger
 src/auth/supabase.js          createClient from env vars, throws if missing
 src/auth/AuthProvider.jsx     context + useAuth(): session, user, isAuthenticated, isLoading, authError, signIn, signUp({ email, password, profile }), signOut

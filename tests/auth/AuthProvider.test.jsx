@@ -1,8 +1,8 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { AuthProvider, useAuth } from './AuthProvider.jsx';
-import { supabase } from './supabase.js';
+import { AuthProvider, useAuth } from '../../src/auth/AuthProvider.jsx';
+import { supabase } from '../../src/auth/supabase.js';
 
-vi.mock('./supabase.js', () => ({
+vi.mock('../../src/auth/supabase.js', () => ({
     supabase: {
         auth: {
             getSession: vi.fn().mockResolvedValue({ data: { session: null } }),

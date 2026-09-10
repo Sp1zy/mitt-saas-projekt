@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import { SignupPage } from './SignupPage.jsx';
-import { VALID_ACCOUNT, VALID_COMPANY, completeAccountStep, completeCompanyStep } from '../test/signupFlow.js';
+import { SignupPage } from '../../src/pages/SignupPage.jsx';
+import { VALID_ACCOUNT, VALID_COMPANY, completeAccountStep, completeCompanyStep } from '../helpers/signupFlow.js';
 
 const mockAuth = vi.hoisted(() => ({
     isAuthenticated: false,
@@ -11,7 +11,7 @@ const mockAuth = vi.hoisted(() => ({
     signUp: vi.fn(),
 }));
 
-vi.mock('../auth/AuthProvider.jsx', () => ({
+vi.mock('../../src/auth/AuthProvider.jsx', () => ({
     useAuth: () => mockAuth,
 }));
 
