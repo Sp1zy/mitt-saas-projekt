@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { TermsOfService, PrivacyPolicy } from './Legal';
-import { Dashboard } from './Dashboard';
-import DevPortfolioGrid from './DevPortfolio';
+import { Routes, Route, Navigate } from 'react-router';
+import { ProtectedRoute } from './auth/ProtectedRoute.jsx';
+import { LandingPage } from './pages/LandingPage.jsx';
+import { TermsPage } from './pages/TermsPage.jsx';
+import { PrivacyPage } from './pages/PrivacyPage.jsx';
+import { LoginPage } from './pages/LoginPage.jsx';
+import { SignupPage } from './pages/SignupPage.jsx';
+import { DashboardPage } from './pages/DashboardPage.jsx';
 
-const STRIPE_PORTAL_URL = "https://billing.stripe.com/p/login/4gMeVd8TH5KadqQct00kE00";
 
 export default function App() {
+<<<<<<< HEAD
     const [view, setView] = useState('main'); // 'main' | 'terms' | 'privacy' | 'dashboard'
     const [openFaq, setOpenFaq] = useState(null);
 
@@ -509,5 +513,19 @@ export default function App() {
                 </div>
             </footer>
         </div>
+=======
+    return (
+        <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+>>>>>>> 2fa57eb392706c605446da7f8d262420f8d994ab
     );
 }
