@@ -17,7 +17,6 @@ export default function App() {
         setOpenFaq(openFaq === index ? null : index);
     };
 
-    
     const faqs = [
         {
             q: 'How fast do requests actually get completed?',
@@ -55,6 +54,7 @@ export default function App() {
                         <a href="#features" className="hover:text-violet-400 transition-colors">Features</a>
                         <a href="#how-it-works" className="hover:text-violet-400 transition-colors">How It Works</a>
                         <a href="#pricing" className="hover:text-violet-400 transition-colors">Pricing</a>
+                        <a href="#contact" className="hover:text-violet-400 transition-colors">Contact</a>
                         <a href="#faq" className="hover:text-violet-400 transition-colors">FAQ</a>
                     </nav>
 
@@ -95,10 +95,10 @@ export default function App() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
                     <a
-                        href="#pricing"
+                        href="#contact"
                         className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-xl shadow-indigo-600/25 active:scale-95 text-center"
                     >
-                        Explore Plans & Sprints
+                        Get In Touch
                     </a>
                     <a
                         href="https://calendly.com/strahlechristian/30min?month=2026-09"
@@ -248,7 +248,6 @@ export default function App() {
                     </p>
                 </div>
 
-                {/* Render the imported component */}
                 <DevPortfolioGrid />
             </section>
 
@@ -379,7 +378,88 @@ export default function App() {
                 </div>
             </section>
 
-            {/* 6. FREQUENTLY ASKED QUESTIONS */}
+            {/* 6. CONTACT / GET IN TOUCH SECTION */}
+            <section id="contact" className="max-w-7xl mx-auto px-6 py-24 border-t border-slate-900">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <div>
+                        <h2 className="text-xs font-semibold uppercase tracking-widest text-violet-400 mb-3">
+                            Get In Touch
+                        </h2>
+                        <h3 className="text-3xl font-extrabold text-white mb-4">
+                            Have questions before subscribing?
+                        </h3>
+                        <p className="text-slate-400 text-sm mb-8">
+                            Let’s discuss your project scope, developer availability, or custom feature requirements.
+                        </p>
+
+                        <div className="space-y-6 mb-10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 font-bold">
+                                    ✉
+                                </div>
+                                <div>
+                                    <span className="text-xs text-slate-400 block">Email Us</span>
+                                    <a href="mailto:contact@getapexdesk.com" className="text-white font-medium hover:text-violet-400 transition-colors">
+                                        contact@getapexdesk.com
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
+                            <h4 className="text-sm font-bold text-white mb-4">What happens next?</h4>
+                            <ol className="space-y-3">
+                                <li className="flex items-center gap-3 text-xs text-slate-300">
+                                    <span className="w-5 h-5 rounded-full bg-violet-600 text-white font-bold flex items-center justify-center text-[10px]">1</span>
+                                    We review your project requirements and technical scope.
+                                </li>
+                                <li className="flex items-center gap-3 text-xs text-slate-300">
+                                    <span className="w-5 h-5 rounded-full bg-violet-600 text-white font-bold flex items-center justify-center text-[10px]">2</span>
+                                    Match you with a dedicated senior full-stack developer.
+                                </li>
+                                <li className="flex items-center gap-3 text-xs text-slate-300">
+                                    <span className="w-5 h-5 rounded-full bg-violet-600 text-white font-bold flex items-center justify-center text-[10px]">3</span>
+                                    Start shipping your first feature updates within 48 hours.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
+                        <form className="space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-300 mb-1">Full Name *</label>
+                                    <input type="text" required placeholder="Alex Morgan" className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-300 mb-1">Email Address *</label>
+                                    <input type="email" required placeholder="alex@company.com" className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-slate-300 mb-1">Website or Project URL</label>
+                                <input type="url" placeholder="https://yourcompany.com" className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500" />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-slate-300 mb-1">Message / Scope Overview *</label>
+                                <textarea rows={4} required placeholder="Tell us about the features or app you want built..." className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500"></textarea>
+                            </div>
+
+                            <button type="submit" className="w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-violet-600/20">
+                                Send Message
+                            </button>
+                            <p className="text-[11px] text-center text-slate-500 mt-2">
+                                We usually respond within 12-24 hours on business days.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            {/* 7. FREQUENTLY ASKED QUESTIONS */}
             <section id="faq" className="max-w-4xl mx-auto px-6 py-24 border-t border-slate-900">
                 <div className="text-center mb-16">
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-violet-400 mb-3">
@@ -394,19 +474,19 @@ export default function App() {
                     {faqs.map((faq, index) => (
                         <div
                             key={index}
-                            className="border border-slate-800 rounded-2xl bg-slate-900/40 overflow-hidden transition-colors"
+                            className="border border-slate-800 rounded-2xl bg-slate-900/40 overflow-hidden transition-all"
                         >
                             <button
                                 onClick={() => toggleFaq(index)}
-                                className="w-full p-6 text-left font-semibold text-white flex justify-between items-center hover:bg-slate-800/40 transition-colors"
+                                className="w-full p-6 text-left flex items-center justify-between font-bold text-white hover:text-violet-400 transition-colors"
                             >
-                                <span className="pr-4">{faq.q}</span>
-                                <span className="text-violet-400 text-2xl font-light">
+                                <span>{faq.q}</span>
+                                <span className="text-violet-400 text-xl font-mono ml-4">
                                     {openFaq === index ? '−' : '+'}
                                 </span>
                             </button>
                             {openFaq === index && (
-                                <div className="px-6 pb-6 text-slate-400 text-sm leading-relaxed border-t border-slate-800/50 pt-4">
+                                <div className="px-6 pb-6 text-sm text-slate-400 border-t border-slate-800/50 pt-4 leading-relaxed">
                                     {faq.a}
                                 </div>
                             )}
@@ -415,25 +495,17 @@ export default function App() {
                 </div>
             </section>
 
-            {/* 7. FOOTER */}
-            <footer className="border-t border-slate-900 bg-slate-950 text-slate-400 py-12">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6 text-sm">
-                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('main')}>
-                        <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">
-                            A
-                        </div>
-                        <span className="font-bold text-white tracking-tight">ApexDesk LLC</span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-6 text-xs sm:text-sm text-slate-400">
-                        <button onClick={() => setView('terms')} className="hover:text-white transition-colors">Terms of Service</button>
-                        <button onClick={() => setView('privacy')} className="hover:text-white transition-colors">Privacy Policy</button>
-                        <a href={STRIPE_PORTAL_URL} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Manage Subscription</a>
-                    </div>
-
-                    <p className="text-xs text-slate-500">
-                        © 2026 ApexDesk LLC. All rights reserved.
-                    </p>
+            {/* 8. FOOTER */}
+            <footer className="max-w-7xl mx-auto px-6 py-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <div>
+                    © {new Date().getFullYear()} ApexDesk LLC. All rights reserved.
+                </div>
+                <div className="flex items-center gap-6">
+                    <a href="mailto:contact@getapexdesk.com" className="hover:text-slate-300 transition-colors">
+                        contact@getapexdesk.com
+                    </a>
+                    <button onClick={() => setView('terms')} className="hover:text-slate-300 transition-colors">Terms of Service</button>
+                    <button onClick={() => setView('privacy')} className="hover:text-slate-300 transition-colors">Privacy Policy</button>
                 </div>
             </footer>
         </div>
